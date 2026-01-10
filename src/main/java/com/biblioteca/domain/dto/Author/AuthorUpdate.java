@@ -6,9 +6,9 @@ import java.util.List;
 import org.hibernate.validator.constraints.Length;
 
 import com.biblioteca.domain.dto.BooksAuthor;
-import com.sun.istack.NotNull;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
 public record AuthorUpdate(
@@ -21,5 +21,5 @@ public record AuthorUpdate(
 
     @PastOrPresent(message = "La fecha de nacimiento debe ser anterior o igual a la actual") LocalDate birthdate,
 
-    @NotNull List<BooksAuthor> books) {
+    @NotNull(message = "Lista de libros obligatoria") List<BooksAuthor> books) {
 }

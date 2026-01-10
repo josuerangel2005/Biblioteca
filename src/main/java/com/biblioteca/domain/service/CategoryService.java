@@ -14,8 +14,8 @@ public class CategoryService {
   @Autowired
   private CategoryRepository categoryRepository;
 
-  public List<Category> getAllsCategory() {
-    return this.categoryRepository.getAllsCategory();
+  public List<Category> getAllCategory() {
+    return this.categoryRepository.getAllCategory();
   }
 
   public Category getCategoryById(int id) {
