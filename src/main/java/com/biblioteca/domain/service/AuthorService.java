@@ -15,8 +15,8 @@ public class AuthorService {
   @Autowired
   private AuthorRepository authorRepository;
 
-  public List<AuthorResponse> getAllsAuthor() {
-    return this.authorRepository.getAllsAuthor();
+  public List<AuthorResponse> getAllAuthor() {
+    return this.authorRepository.getAllAuthor();
   }
 
   public AuthorResponse getAuthorById(int id) {

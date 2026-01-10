@@ -26,8 +26,8 @@ public class AuthorController {
   private AuthorService authorService;
 
   @GetMapping
-  public ResponseEntity<List<AuthorResponse>> getAllsAuthor() {
-    return new ResponseEntity<List<AuthorResponse>>(this.authorService.getAllsAuthor(), HttpStatus.OK);
+  public ResponseEntity<List<AuthorResponse>> getAllAuthor() {
+    return new ResponseEntity<List<AuthorResponse>>(this.authorService.getAllAuthor(), HttpStatus.OK);
   }
 
   @GetMapping("/{id}")

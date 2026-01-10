@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.biblioteca.domain.dto.Author.AuthorResponse;
 import com.biblioteca.domain.dto.Author.AuthorSave;
 import com.biblioteca.domain.dto.Author.AuthorUpdate;
+import com.biblioteca.domain.exception.AuthorAlreadyExistsException;
+import com.biblioteca.domain.exception.AuthorNotExistsException;
 import com.biblioteca.domain.repository.AuthorRepository;
 import com.biblioteca.persistence.crud.AutorCrudRepository;
 import com.biblioteca.persistence.entity.Autor;
@@ -32,15 +34,13 @@ public class AutorRepository implements AuthorRepository {
 
   @Override
   public void deleteAuthor(int id) {
-
     this.autorCrudRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Error al encontrar el autor con id " + id));
-
+        .orElseThrow(() -> new AuthorNotExistsException(id));
     this.autorCrudRepository.deleteById(id);
   }
 
   @Override
-  public List<AuthorResponse> getAllsAuthor() {
+  public List<AuthorResponse> getAllAuthor() {
     return this.authorMapper.toAuthors(this.autorCrudRepository.findAll());
   }
 
@@ -52,16 +52,16 @@ public class AutorRepository implements AuthorRepository {
 
   @Override
   public AuthorResponse saveAuthor(AuthorSave author) {
+    if (this.autorCrudRepository.findFirstByNombre(author.name()) != null)
+      throw new AuthorAlreadyExistsException(author.name());
     return this.authorMapper.toAuthor(this.autorCrudRepository.save(this.authorSaveMapper.toAutor(author)));
   }
 
   @Override
   public AuthorResponse updateAuthor(int id, AuthorUpdate author) {
     Autor toUpdate = this.autorCrudRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Error al encontrar el autor con id " + id));
-
+        .orElseThrow(() -> new AuthorNotExistsException(id));
     this.authorUpdateMapper.updateEntityFromDto(author, toUpdate);
-
     return this.authorMapper.toAuthor(this.autorCrudRepository.save(toUpdate));
   }
 

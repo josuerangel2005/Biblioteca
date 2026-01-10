@@ -7,7 +7,7 @@ import com.biblioteca.domain.dto.Author.AuthorSave;
 import com.biblioteca.domain.dto.Author.AuthorUpdate;
 
 public interface AuthorRepository {
-  List<AuthorResponse> getAllsAuthor();
+  List<AuthorResponse> getAllAuthor();
 
   AuthorResponse getAuthorById(int id);
 
