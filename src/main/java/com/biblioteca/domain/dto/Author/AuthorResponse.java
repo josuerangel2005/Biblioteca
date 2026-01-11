@@ -6,7 +6,7 @@ import java.util.List;
 import com.biblioteca.domain.dto.BooksAuthor;
 
 public record AuthorResponse(
-    Integer idAuthor,
+    Integer authorId,
     String name,
     String biography,
     String nationality,

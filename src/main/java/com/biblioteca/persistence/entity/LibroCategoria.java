@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,6 +16,7 @@ public class LibroCategoria {
   private LibroCategoriaPK libroCategoriaPK;
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @MapsId("idLibro")
   @JoinColumn(name = "id_libro", insertable = false, updatable = false)
   private Libro libro;
 

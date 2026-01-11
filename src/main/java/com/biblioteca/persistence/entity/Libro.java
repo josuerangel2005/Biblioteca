@@ -2,6 +2,7 @@ package com.biblioteca.persistence.entity;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,11 +30,13 @@ public class Libro {
 
   @Column(nullable = false)
   private Boolean disponible;
+  // orphanRemoval --> "Si un hijo deja de pertenecer a su padre, ese hijo ya no
+  // tiene razón de existir en el mundo (base de datos), con cascade solo surge
+  // efecto si se elimina el padre por completo"
+  @OneToMany(mappedBy = "libro", cascade = { CascadeType.ALL }, orphanRemoval = true)
+  private List<LibroAutor> libroAutores;
 
-  @OneToMany(mappedBy = "libro")
-  private List<LibroAutor> libroAutors;
-
-  @OneToMany(mappedBy = "libro")
+  @OneToMany(mappedBy = "libro", cascade = { CascadeType.ALL }, orphanRemoval = true)
   private List<LibroCategoria> libroCategorias;
 
   @OneToMany(mappedBy = "libro")
@@ -79,12 +82,12 @@ public class Libro {
     this.disponible = disponible;
   }
 
-  public List<LibroAutor> getLibroAutors() {
-    return libroAutors;
+  public List<LibroAutor> getLibroAutores() {
+    return libroAutores;
   }
 
-  public void setLibroAutors(List<LibroAutor> libroAutors) {
-    this.libroAutors = libroAutors;
+  public void setLibroAutores(List<LibroAutor> libroAutores) {
+    this.libroAutores = libroAutores;
   }
 
   public List<LibroCategoria> getLibroCategorias() {
