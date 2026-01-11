@@ -1,6 +1,7 @@
 package com.biblioteca.persistence.entity;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -34,13 +35,13 @@ public class Libro {
   // tiene razón de existir en el mundo (base de datos), con cascade solo surge
   // efecto si se elimina el padre por completo"
   @OneToMany(mappedBy = "libro", cascade = { CascadeType.ALL }, orphanRemoval = true)
-  private List<LibroAutor> libroAutores;
+  private Set<LibroAutor> libroAutores = new HashSet<>();
 
   @OneToMany(mappedBy = "libro", cascade = { CascadeType.ALL }, orphanRemoval = true)
-  private List<LibroCategoria> libroCategorias;
+  private Set<LibroCategoria> libroCategorias = new HashSet<>();
 
   @OneToMany(mappedBy = "libro")
-  private List<PrestamoLibro> prestamoLibros;
+  private Set<PrestamoLibro> prestamoLibros = new HashSet<>();
 
   public Integer getIdLibro() {
     return idLibro;
@@ -82,27 +83,27 @@ public class Libro {
     this.disponible = disponible;
   }
 
-  public List<LibroAutor> getLibroAutores() {
+  public Set<LibroAutor> getLibroAutores() {
     return libroAutores;
   }
 
-  public void setLibroAutores(List<LibroAutor> libroAutores) {
+  public void setLibroAutores(Set<LibroAutor> libroAutores) {
     this.libroAutores = libroAutores;
   }
 
-  public List<LibroCategoria> getLibroCategorias() {
+  public Set<LibroCategoria> getLibroCategorias() {
     return libroCategorias;
   }
 
-  public void setLibroCategorias(List<LibroCategoria> libroCategorias) {
+  public void setLibroCategorias(Set<LibroCategoria> libroCategorias) {
     this.libroCategorias = libroCategorias;
   }
 
-  public List<PrestamoLibro> getPrestamoLibros() {
+  public Set<PrestamoLibro> getPrestamoLibros() {
     return prestamoLibros;
   }
 
-  public void setPrestamoLibros(List<PrestamoLibro> prestamoLibros) {
+  public void setPrestamoLibros(Set<PrestamoLibro> prestamoLibros) {
     this.prestamoLibros = prestamoLibros;
   }
 

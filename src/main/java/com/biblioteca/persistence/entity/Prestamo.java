@@ -1,7 +1,8 @@
 package com.biblioteca.persistence.entity;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,7 +41,7 @@ public class Prestamo {
   private Usuario usuario;
 
   @OneToMany(mappedBy = "prestamo")
-  private List<PrestamoLibro> prestamoLibros;
+  private Set<PrestamoLibro> prestamoLibros = new HashSet<>();
 
   public Integer getIdPrestamo() {
     return idPrestamo;
@@ -80,6 +81,22 @@ public class Prestamo {
 
   public void setEntregado(Boolean entregado) {
     this.entregado = entregado;
+  }
+
+  public Usuario getUsuario() {
+    return usuario;
+  }
+
+  public void setUsuario(Usuario usuario) {
+    this.usuario = usuario;
+  }
+
+  public Set<PrestamoLibro> getPrestamoLibros() {
+    return prestamoLibros;
+  }
+
+  public void setPrestamoLibros(Set<PrestamoLibro> prestamoLibros) {
+    this.prestamoLibros = prestamoLibros;
   }
 
 }

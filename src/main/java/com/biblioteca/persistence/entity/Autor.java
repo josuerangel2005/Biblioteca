@@ -1,7 +1,8 @@
 package com.biblioteca.persistence.entity;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,7 +34,7 @@ public class Autor {
   private LocalDate fechaNacimiento;
 
   @OneToMany(mappedBy = "autor")
-  List<LibroAutor> libroAutors;
+  private Set<LibroAutor> libroAutors = new HashSet<>();
 
   public Integer getIdAutor() {
     return idAutor;
@@ -75,11 +76,11 @@ public class Autor {
     this.fechaNacimiento = fechaNacimiento;
   }
 
-  public List<LibroAutor> getLibroAutors() {
+  public Set<LibroAutor> getLibroAutors() {
     return libroAutors;
   }
 
-  public void setLibroAutors(List<LibroAutor> libroAutors) {
+  public void setLibroAutors(Set<LibroAutor> libroAutors) {
     this.libroAutors = libroAutors;
   }
 

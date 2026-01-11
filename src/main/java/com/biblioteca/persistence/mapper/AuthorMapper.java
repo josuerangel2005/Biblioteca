@@ -11,7 +11,7 @@ import com.biblioteca.persistence.entity.Autor;
 @Mapper(componentModel = "spring", uses = { BooksAuthorMapper.class })
 public interface AuthorMapper {
 
-  @Mapping(source = "idAutor", target = "idAuthor")
+  @Mapping(source = "idAutor", target = "authorId")
   @Mapping(source = "nombre", target = "name")
   @Mapping(source = "biografia", target = "biography")
   @Mapping(source = "nacionalidad", target = "nationality")

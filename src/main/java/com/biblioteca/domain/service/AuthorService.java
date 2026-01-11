@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biblioteca.domain.dto.Author.AuthorResponse;
 import com.biblioteca.domain.dto.Author.AuthorSave;
@@ -15,22 +16,27 @@ public class AuthorService {
   @Autowired
   private AuthorRepository authorRepository;
 
+  @Transactional(readOnly = true)
   public List<AuthorResponse> getAllAuthor() {
     return this.authorRepository.getAllAuthor();
   }
 
+  @Transactional(readOnly = true)
   public AuthorResponse getAuthorById(int id) {
     return this.authorRepository.getAuthorById(id);
   }
 
+  @Transactional
   public AuthorResponse saveAuthor(AuthorSave authorSave) {
     return this.authorRepository.saveAuthor(authorSave);
   }
 
+  @Transactional
   public AuthorResponse updateAuthor(int id, AuthorUpdate authorUpdate) {
     return this.authorRepository.updateAuthor(id, authorUpdate);
   }
 
+  @Transactional
   public void deleteAuthor(int id) {
     this.authorRepository.deleteAuthor(id);
   }

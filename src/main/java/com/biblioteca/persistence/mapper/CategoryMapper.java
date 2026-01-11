@@ -13,7 +13,7 @@ import com.biblioteca.persistence.entity.Categoria;
 
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
-  @Mapping(source = "idCategoria", target = "CategoryId")
+  @Mapping(source = "idCategoria", target = "categoryId")
   @Mapping(source = "nombre", target = "name")
   Category toCategory(Categoria categoria);
 

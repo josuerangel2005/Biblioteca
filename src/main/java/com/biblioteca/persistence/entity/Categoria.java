@@ -1,6 +1,7 @@
 package com.biblioteca.persistence.entity;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +23,7 @@ public class Categoria {
   private String nombre;
 
   @OneToMany(mappedBy = "categoria")
-  private List<LibroCategoria> libroCategorias;
+  private Set<LibroCategoria> libroCategorias = new HashSet<>();
 
   public Integer getIdCategoria() {
     return idCategoria;
@@ -40,11 +41,11 @@ public class Categoria {
     this.nombre = nombre;
   }
 
-  public List<LibroCategoria> getLibroCategorias() {
+  public Set<LibroCategoria> getLibroCategorias() {
     return libroCategorias;
   }
 
-  public void setLibroCategorias(List<LibroCategoria> libroCategorias) {
+  public void setLibroCategorias(Set<LibroCategoria> libroCategorias) {
     this.libroCategorias = libroCategorias;
   }
 
