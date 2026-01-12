@@ -14,8 +14,8 @@ public interface BookUpdateMapper {
   @Mapping(target = "numPaginas", source = "numPages")
   @Mapping(target = "isbn", source = "isbn")
   @Mapping(target = "disponible", source = "available", qualifiedByName = "StringToBoolean")
-  @Mapping(source = "authors", target = "libroAutores")
-  @Mapping(source = "categories", target = "libroCategorias")
   @Mapping(target = "prestamoLibros", ignore = true)
+  @Mapping(target = "libroAutores", ignore = true)
+  @Mapping(target = "libroCategorias", ignore = true)
   void updateLibroFromBookSave(BookUpdate bookUpdate, @MappingTarget Libro libro);
 }

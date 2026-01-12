@@ -1,6 +1,8 @@
 package com.biblioteca.persistence.repository;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -14,12 +16,16 @@ import com.biblioteca.domain.repository.BookRepository;
 import com.biblioteca.persistence.crud.AutorCrudRepository;
 import com.biblioteca.persistence.crud.CategoriaCrudRepository;
 import com.biblioteca.persistence.crud.LibroCrudRepository;
+import com.biblioteca.persistence.entity.Autor;
+import com.biblioteca.persistence.entity.Categoria;
 import com.biblioteca.persistence.entity.Libro;
+import com.biblioteca.persistence.entity.LibroAutor;
+import com.biblioteca.persistence.entity.LibroAutorPK;
+import com.biblioteca.persistence.entity.LibroCategoria;
+import com.biblioteca.persistence.entity.LibroCategoriaPK;
 import com.biblioteca.persistence.mapper.BookMapper;
 import com.biblioteca.persistence.mapper.BookSaveMapper;
 import com.biblioteca.persistence.mapper.BookUpdateMapper;
-
-import jakarta.persistence.EntityManager;
 
 @Repository
 public class BookRepositoryJPA implements BookRepository {
@@ -40,9 +46,6 @@ public class BookRepositoryJPA implements BookRepository {
 
   @Autowired
   private BookUpdateMapper bookUpdateMapper;
-
-  @Autowired
-  private EntityManager entityManager;
 
   public void validarIdAutor(int id) {
     this.autorCrudRepository.findById(id).orElseThrow(() -> new AuthorNotExistsException(id));
@@ -70,55 +73,99 @@ public class BookRepositoryJPA implements BookRepository {
 
   @Override
   public Book saveBook(BookSave bookSave) {
+    // validar ids de categorias y autores
 
-    // Validar ids de categorias y autores
     bookSave.authors().forEach(id -> this.validarIdAutor(id.idAuthor()));
     bookSave.categories().forEach(id -> this.validarIdCategoria(id.categoryId()));
 
-    Libro toSave = this.bookSaveMapper.toLibro(bookSave);
-    toSave.setDisponible(true);
+    Libro libro = this.bookSaveMapper.toLibro(bookSave);
+    libro.setDisponible(true);
 
-    // setear tanto a los libroAuto y libroCategoria el libro actual a guardar para
-    // que maps id sepa cual id libroCategoria
-    toSave.getLibroAutores().forEach(libroAutor -> libroAutor.setLibro(toSave));
-    toSave.getLibroCategorias().forEach(libroCategoria -> libroCategoria.setLibro(toSave));
+    // setear los autores y categorias (como objetos) para que jpa tome el id a
+    // treavés del objeto
+    Set<LibroAutor> libroAutors = bookSave.authors().stream().map(authorId -> {
+      Autor autor = this.autorCrudRepository.findById(authorId.idAuthor()).orElseThrow(() -> new RuntimeException());
 
-    Libro libro = this.libroCrudRepository.save(toSave);
+      LibroAutor libroAutor = new LibroAutor();
 
-    this.entityManager.flush();
-    this.entityManager.clear();
+      LibroAutorPK libroAutorPK = new LibroAutorPK();
+      libroAutorPK.setIdAutor(autor.getIdAutor());
+      libroAutor.setLibroAutorPK(libroAutorPK);
 
-    return this.bookMapper
-        .toBook(this.libroCrudRepository.findById(libro.getIdLibro()).orElseThrow(() -> new RuntimeException()));
+      libroAutor.setAutor(autor); // le damos el autor como objeto para que en libroAutor tome como id el id del
+                                  // autor
+      libroAutor.setLibro(libro); // le seteamos el libro para que la anotación @mapsid sepa de que objeto tomar
+                                  // el id para propagar en libroAutor en el campo de idLibro
+      return libroAutor;
+
+    }).collect(Collectors.toSet());
+
+    Set<LibroCategoria> libroCategorias = bookSave.categories().stream().map(categoryId -> {
+      Categoria categoria = this.categoriaCrudRepository.findById(categoryId.categoryId())
+          .orElseThrow(() -> new RuntimeException());
+
+      LibroCategoria libroCategoria = new LibroCategoria();
+
+      LibroCategoriaPK libroCategoriaPK = new LibroCategoriaPK();
+      libroCategoriaPK.setIdCategoria(categoria.getIdCategoria());
+      libroCategoria.setLibroCategoriaPK(libroCategoriaPK);
+
+      libroCategoria.setCategoria(categoria);
+      libroCategoria.setLibro(libro);
+
+      return libroCategoria;
+    }).collect(Collectors.toSet());
+
+    libro.setLibroAutores(libroAutors);
+    libro.setLibroCategorias(libroCategorias);
+
+    return this.bookMapper.toBook(this.libroCrudRepository.save(libro));
   }
 
   @Override
   public Book updateBook(BookUpdate bookUpdate, int id) {
-    bookUpdate.authors().forEach(idA -> this.validarIdAutor(idA.idAuthor()));
-    bookUpdate.categories().forEach(idC -> this.validarIdCategoria(idC.categoryId()));
+    bookUpdate.authors().forEach(idAuthor -> this.validarIdAutor(idAuthor.idAuthor()));
+    bookUpdate.categories().forEach(categoryId -> this.validarIdCategoria(categoryId.categoryId()));
 
-    Libro toUpdate = this.libroCrudRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+    Libro libro = this.libroCrudRepository.findById(id).orElseThrow(() -> new RuntimeException());
 
-    // 3. Limpiar las relaciones actuales para evitar el error de "duplicados"
-    toUpdate.getLibroAutores().clear();
-    toUpdate.getLibroCategorias().clear();
-    this.entityManager.flush();
+    this.bookUpdateMapper.updateLibroFromBookSave(bookUpdate, libro);
 
-    // 4. Mapear los nuevos datos del DTO a la entidad
-    this.bookUpdateMapper.updateLibroFromBookSave(bookUpdate, toUpdate);
+    libro.getLibroAutores().clear();
+    libro.getLibroCategorias().clear();
 
-    // 5. Re-vincular las relaciones (id libro -> tabla intermedia)
-    toUpdate.getLibroAutores().forEach(la -> la.setLibro(toUpdate));
-    toUpdate.getLibroCategorias().forEach(lc -> lc.setLibro(toUpdate));
+    // Mapear y AÑADIR (addAll) en lugar de setear una lista nueva, orphan da error
+    // se seteamos una nueva lista, debe ser la misma referencia
+    bookUpdate.authors().forEach(idAuthor -> {
+      Autor autor = this.autorCrudRepository.findById(idAuthor.idAuthor()).orElseThrow();
 
-    Libro libroGuardado = this.libroCrudRepository.save(toUpdate);
+      LibroAutor libroAutor = new LibroAutor();
+      LibroAutorPK libroAutorPK = new LibroAutorPK();
+      libroAutorPK.setIdAutor(autor.getIdAutor());
+      libroAutorPK.setIdLibro(libro.getIdLibro());
 
-    // El flush escribe en las tablas intermedias, el refresh trae los nombres
-    this.entityManager.flush();
-    this.entityManager.refresh(libroGuardado);
+      libroAutor.setLibroAutorPK(libroAutorPK);
+      libroAutor.setLibro(libro);
+      libroAutor.setAutor(autor);
 
-    return this.bookMapper.toBook(libroGuardado);
+      libro.getLibroAutores().add(libroAutor);
+    });
+
+    bookUpdate.categories().forEach(idCat -> {
+      Categoria categoria = this.categoriaCrudRepository.findById(idCat.categoryId()).orElseThrow();
+
+      LibroCategoria libroCategoria = new LibroCategoria();
+      LibroCategoriaPK libroCategoriaPK = new LibroCategoriaPK();
+      libroCategoriaPK.setIdCategoria(categoria.getIdCategoria());
+      libroCategoriaPK.setIdLibro(libro.getIdLibro());
+
+      libroCategoria.setLibroCategoriaPK(libroCategoriaPK);
+      libroCategoria.setLibro(libro);
+      libroCategoria.setCategoria(categoria);
+
+      libro.getLibroCategorias().add(libroCategoria);
+    });
+
+    return this.bookMapper.toBook(this.libroCrudRepository.save(libro));
   }
-
 }

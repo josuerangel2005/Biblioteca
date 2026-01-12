@@ -19,6 +19,8 @@ public interface BookSaveMapper {
 
   @InheritInverseConfiguration
   @Mapping(target = "prestamoLibros", ignore = true)
+  @Mapping(target = "libroAutores", ignore = true)
+  @Mapping(target = "libroCategorias", ignore = true)
   @Mapping(target = "disponible", ignore = true)
   @Mapping(target = "idLibro", ignore = true)
   Libro toLibro(BookSave bookSave);
