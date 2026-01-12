@@ -58,4 +58,29 @@ public class PrestamoLibro {
     this.prestamo = prestamo;
   }
 
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((prestamoLibroPK == null) ? 0 : prestamoLibroPK.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    PrestamoLibro other = (PrestamoLibro) obj;
+    if (prestamoLibroPK == null) {
+      if (other.prestamoLibroPK != null)
+        return false;
+    } else if (!prestamoLibroPK.equals(other.prestamoLibroPK))
+      return false;
+    return true;
+  }
+
 }

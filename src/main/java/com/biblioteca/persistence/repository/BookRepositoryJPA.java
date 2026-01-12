@@ -88,9 +88,7 @@ public class BookRepositoryJPA implements BookRepository {
 
       LibroAutor libroAutor = new LibroAutor();
 
-      LibroAutorPK libroAutorPK = new LibroAutorPK();
-      libroAutorPK.setIdAutor(autor.getIdAutor());
-      libroAutor.setLibroAutorPK(libroAutorPK);
+      libroAutor.setLibroAutorPK(new LibroAutorPK());
 
       libroAutor.setAutor(autor); // le damos el autor como objeto para que en libroAutor tome como id el id del
                                   // autor
@@ -106,9 +104,7 @@ public class BookRepositoryJPA implements BookRepository {
 
       LibroCategoria libroCategoria = new LibroCategoria();
 
-      LibroCategoriaPK libroCategoriaPK = new LibroCategoriaPK();
-      libroCategoriaPK.setIdCategoria(categoria.getIdCategoria());
-      libroCategoria.setLibroCategoriaPK(libroCategoriaPK);
+      libroCategoria.setLibroCategoriaPK(new LibroCategoriaPK());
 
       libroCategoria.setCategoria(categoria);
       libroCategoria.setLibro(libro);
@@ -124,48 +120,58 @@ public class BookRepositoryJPA implements BookRepository {
 
   @Override
   public Book updateBook(BookUpdate bookUpdate, int id) {
-    bookUpdate.authors().forEach(idAuthor -> this.validarIdAutor(idAuthor.idAuthor()));
-    bookUpdate.categories().forEach(categoryId -> this.validarIdCategoria(categoryId.categoryId()));
-
-    Libro libro = this.libroCrudRepository.findById(id).orElseThrow(() -> new RuntimeException());
+    Libro libro = this.libroCrudRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
 
     this.bookUpdateMapper.updateLibroFromBookSave(bookUpdate, libro);
 
-    libro.getLibroAutores().clear();
-    libro.getLibroCategorias().clear();
+    Set<Integer> nuevosIdsAutores = bookUpdate.authors().stream()
+        .map(a -> a.idAuthor())
+        .collect(Collectors.toSet());
 
-    // Mapear y AÑADIR (addAll) en lugar de setear una lista nueva, orphan da error
-    // se seteamos una nueva lista, debe ser la misma referencia
-    bookUpdate.authors().forEach(idAuthor -> {
-      Autor autor = this.autorCrudRepository.findById(idAuthor.idAuthor()).orElseThrow();
+    libro.getLibroAutores().removeIf(ra -> !nuevosIdsAutores.contains(ra.getAutor().getIdAutor()));
 
-      LibroAutor libroAutor = new LibroAutor();
-      LibroAutorPK libroAutorPK = new LibroAutorPK();
-      libroAutorPK.setIdAutor(autor.getIdAutor());
-      libroAutorPK.setIdLibro(libro.getIdLibro());
+    bookUpdate.authors().forEach(dtoAuthor -> {
+      boolean yaExiste = libro.getLibroAutores().stream()
+          .anyMatch(ra -> ra.getAutor().getIdAutor().equals(dtoAuthor.idAuthor()));
 
-      libroAutor.setLibroAutorPK(libroAutorPK);
-      libroAutor.setLibro(libro);
-      libroAutor.setAutor(autor);
+      if (!yaExiste) {
+        this.validarIdAutor(dtoAuthor.idAuthor());
+        Autor autor = this.autorCrudRepository.findById(dtoAuthor.idAuthor()).orElseThrow();
 
-      libro.getLibroAutores().add(libroAutor);
+        LibroAutor libroAutor = new LibroAutor();
+        libroAutor.setLibroAutorPK(new LibroAutorPK());
+        libroAutor.setLibro(libro);
+        libroAutor.setAutor(autor);
+
+        libro.getLibroAutores().add(libroAutor);
+      }
     });
 
-    bookUpdate.categories().forEach(idCat -> {
-      Categoria categoria = this.categoriaCrudRepository.findById(idCat.categoryId()).orElseThrow();
+    Set<Integer> nuevosIdsCategorias = bookUpdate.categories().stream()
+        .map(c -> c.categoryId())
+        .collect(Collectors.toSet());
 
-      LibroCategoria libroCategoria = new LibroCategoria();
-      LibroCategoriaPK libroCategoriaPK = new LibroCategoriaPK();
-      libroCategoriaPK.setIdCategoria(categoria.getIdCategoria());
-      libroCategoriaPK.setIdLibro(libro.getIdLibro());
+    libro.getLibroCategorias().removeIf(lc -> !nuevosIdsCategorias.contains(lc.getCategoria().getIdCategoria()));
 
-      libroCategoria.setLibroCategoriaPK(libroCategoriaPK);
-      libroCategoria.setLibro(libro);
-      libroCategoria.setCategoria(categoria);
+    bookUpdate.categories().forEach(dtoCategory -> {
+      boolean yaExiste = libro.getLibroCategorias().stream()
+          .anyMatch(lc -> lc.getCategoria().getIdCategoria().equals(dtoCategory.categoryId()));
 
-      libro.getLibroCategorias().add(libroCategoria);
+      if (!yaExiste) {
+        this.validarIdCategoria(dtoCategory.categoryId());
+        Categoria categoria = this.categoriaCrudRepository.findById(dtoCategory.categoryId()).orElseThrow();
+
+        LibroCategoria libroCategoria = new LibroCategoria();
+        libroCategoria.setLibroCategoriaPK(new LibroCategoriaPK());
+        libroCategoria.setLibro(libro);
+        libroCategoria.setCategoria(categoria);
+
+        libro.getLibroCategorias().add(libroCategoria);
+      }
     });
 
-    return this.bookMapper.toBook(this.libroCrudRepository.save(libro));
+    Libro libroGuardado = this.libroCrudRepository.save(libro);
+    return this.bookMapper.toBook(libroGuardado);
   }
 }

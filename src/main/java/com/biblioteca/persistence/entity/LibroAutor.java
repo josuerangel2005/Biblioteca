@@ -16,6 +16,7 @@ public class LibroAutor {
   private LibroAutorPK libroAutorPK;
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @MapsId("idAutor")
   @JoinColumn(name = "id_autor", insertable = false, updatable = false)
   private Autor autor;
 
@@ -46,6 +47,31 @@ public class LibroAutor {
 
   public void setLibro(Libro libro) {
     this.libro = libro;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((libroAutorPK == null) ? 0 : libroAutorPK.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    LibroAutor other = (LibroAutor) obj;
+    if (libroAutorPK == null) {
+      if (other.libroAutorPK != null)
+        return false;
+    } else if (!libroAutorPK.equals(other.libroAutorPK))
+      return false;
+    return true;
   }
 
 }

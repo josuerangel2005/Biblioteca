@@ -29,4 +29,35 @@ public class LibroAutorPK implements Serializable {
     this.idLibro = idLibro;
   }
 
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((idAutor == null) ? 0 : idAutor.hashCode());
+    result = prime * result + ((idLibro == null) ? 0 : idLibro.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    LibroAutorPK other = (LibroAutorPK) obj;
+    if (idAutor == null) {
+      if (other.idAutor != null)
+        return false;
+    } else if (!idAutor.equals(other.idAutor))
+      return false;
+    if (idLibro == null) {
+      if (other.idLibro != null)
+        return false;
+    } else if (!idLibro.equals(other.idLibro))
+      return false;
+    return true;
+  }
+
 }

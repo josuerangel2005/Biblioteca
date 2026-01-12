@@ -99,4 +99,29 @@ public class Prestamo {
     this.prestamoLibros = prestamoLibros;
   }
 
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((idPrestamo == null) ? 0 : idPrestamo.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Prestamo other = (Prestamo) obj;
+    if (idPrestamo == null) {
+      if (other.idPrestamo != null)
+        return false;
+    } else if (!idPrestamo.equals(other.idPrestamo))
+      return false;
+    return true;
+  }
+
 }
