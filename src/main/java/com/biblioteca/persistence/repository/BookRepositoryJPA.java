@@ -11,6 +11,7 @@ import com.biblioteca.domain.dto.Book.Book;
 import com.biblioteca.domain.dto.Book.BookSave;
 import com.biblioteca.domain.dto.Book.BookUpdate;
 import com.biblioteca.domain.exception.AuthorNotExistsException;
+import com.biblioteca.domain.exception.BookNotExistsException;
 import com.biblioteca.domain.exception.CategoryNotExistsException;
 import com.biblioteca.domain.repository.BookRepository;
 import com.biblioteca.persistence.crud.AutorCrudRepository;
@@ -57,7 +58,7 @@ public class BookRepositoryJPA implements BookRepository {
 
   @Override
   public void deleteBook(int id) {
-    this.libroCrudRepository.findById(id).orElseThrow(() -> new RuntimeException());
+    this.libroCrudRepository.findById(id).orElseThrow(() -> new BookNotExistsException(id));
     this.libroCrudRepository.deleteById(id);
   }
 
@@ -68,7 +69,8 @@ public class BookRepositoryJPA implements BookRepository {
 
   @Override
   public Book getBookById(int id) {
-    return this.bookMapper.toBook(this.libroCrudRepository.findById(id).orElseThrow(() -> new RuntimeException()));
+    return this.bookMapper
+        .toBook(this.libroCrudRepository.findById(id).orElseThrow(() -> new BookNotExistsException(id)));
   }
 
   @Override
@@ -84,7 +86,8 @@ public class BookRepositoryJPA implements BookRepository {
     // setear los autores y categorias (como objetos) para que jpa tome el id a
     // treavés del objeto
     Set<LibroAutor> libroAutors = bookSave.authors().stream().map(authorId -> {
-      Autor autor = this.autorCrudRepository.findById(authorId.idAuthor()).orElseThrow(() -> new RuntimeException());
+      Autor autor = this.autorCrudRepository.findById(authorId.idAuthor())
+          .orElseThrow(() -> new AuthorNotExistsException(authorId.idAuthor()));
 
       LibroAutor libroAutor = new LibroAutor();
 
@@ -100,7 +103,7 @@ public class BookRepositoryJPA implements BookRepository {
 
     Set<LibroCategoria> libroCategorias = bookSave.categories().stream().map(categoryId -> {
       Categoria categoria = this.categoriaCrudRepository.findById(categoryId.categoryId())
-          .orElseThrow(() -> new RuntimeException());
+          .orElseThrow(() -> new CategoryNotExistsException(categoryId.categoryId()));
 
       LibroCategoria libroCategoria = new LibroCategoria();
 
@@ -121,7 +124,7 @@ public class BookRepositoryJPA implements BookRepository {
   @Override
   public Book updateBook(BookUpdate bookUpdate, int id) {
     Libro libro = this.libroCrudRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+        .orElseThrow(() -> new BookNotExistsException(id));
 
     this.bookUpdateMapper.updateLibroFromBookSave(bookUpdate, libro);
 
