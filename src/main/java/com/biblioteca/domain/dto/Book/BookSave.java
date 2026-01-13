@@ -17,4 +17,5 @@ public record BookSave(
     @NotNull(message = "Los iDs de los autores del libro son obligatorios") List<AuthorId> authors,
 
     @NotNull(message = "Los iDs de las categorias a las que pertenece el libro son obligatorios") List<CategoryId> categories) {
+
 }
