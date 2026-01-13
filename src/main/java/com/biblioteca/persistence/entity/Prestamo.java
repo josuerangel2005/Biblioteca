@@ -18,7 +18,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Prestamo")
 public class Prestamo {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id_prestamo")

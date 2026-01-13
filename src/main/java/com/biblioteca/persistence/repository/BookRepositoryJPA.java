@@ -11,6 +11,7 @@ import com.biblioteca.domain.dto.Book.Book;
 import com.biblioteca.domain.dto.Book.BookSave;
 import com.biblioteca.domain.dto.Book.BookUpdate;
 import com.biblioteca.domain.exception.AuthorNotExistsException;
+import com.biblioteca.domain.exception.BookAlreadyExistsException;
 import com.biblioteca.domain.exception.BookNotExistsException;
 import com.biblioteca.domain.exception.CategoryNotExistsException;
 import com.biblioteca.domain.repository.BookRepository;
@@ -75,6 +76,8 @@ public class BookRepositoryJPA implements BookRepository {
 
   @Override
   public Book saveBook(BookSave bookSave) {
+    if (this.libroCrudRepository.findFirstByTitulo(bookSave.title()) != null)
+      throw new BookAlreadyExistsException(bookSave.title());
     // validar ids de categorias y autores
 
     bookSave.authors().forEach(id -> this.validarIdAutor(id.idAuthor()));
