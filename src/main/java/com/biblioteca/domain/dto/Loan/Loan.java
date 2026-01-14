@@ -3,9 +3,11 @@ package com.biblioteca.domain.dto.Loan;
 import java.time.LocalDate;
 import java.util.List;
 
-public record PrestamoSave(
+public record Loan(
+    Integer loadId,
     Integer userId,
     LocalDate loanDate,
-    Integer bookQuiantity,
+    Integer bookQuantity,
+    Boolean delivered,
     List<LoanBook> books) {
 }

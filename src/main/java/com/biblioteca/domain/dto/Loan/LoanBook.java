@@ -1,5 +1,7 @@
 package com.biblioteca.domain.dto.Loan;
 
 public record LoanBook(
-    Integer bookId) {
+    Integer bookId,
+    Integer quantity) {
+
 }

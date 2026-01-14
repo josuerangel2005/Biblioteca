@@ -1,9 +1,10 @@
 package com.biblioteca.persistence.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,7 +17,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Prestamo")
+@Table(name = "prestamo")
 public class Prestamo {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +28,7 @@ public class Prestamo {
   private Integer idUsuario;
 
   @Column(name = "fecha_prestamo", nullable = false)
-  private LocalDate fechaPrestamo;
+  private LocalDateTime fechaPrestamo;
 
   @Column(nullable = false)
   private Integer cantidadLibros;
@@ -39,7 +40,7 @@ public class Prestamo {
   @JoinColumn(name = "id_usuario", insertable = false, updatable = false)
   private Usuario usuario;
 
-  @OneToMany(mappedBy = "prestamo")
+  @OneToMany(mappedBy = "prestamo", orphanRemoval = true, cascade = CascadeType.ALL)
   private Set<PrestamoLibro> prestamoLibros = new HashSet<>();
 
   public Integer getIdPrestamo() {
@@ -58,11 +59,11 @@ public class Prestamo {
     this.idUsuario = idUsuario;
   }
 
-  public LocalDate getFechaPrestamo() {
+  public LocalDateTime getFechaPrestamo() {
     return fechaPrestamo;
   }
 
-  public void setFechaPrestamo(LocalDate fechaPrestamo) {
+  public void setFechaPrestamo(LocalDateTime fechaPrestamo) {
     this.fechaPrestamo = fechaPrestamo;
   }
 

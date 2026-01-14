@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
 @Entity
@@ -23,6 +24,7 @@ public class PrestamoLibro {
   private Libro libro;
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @MapsId("idPrestamo")
   @JoinColumn(name = "id_prestamo", insertable = false, updatable = false)
   private Prestamo prestamo;
 
