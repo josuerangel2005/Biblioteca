@@ -11,8 +11,7 @@ import com.biblioteca.persistence.entity.Prestamo;
 public interface LoanSaveMapper {
 
   @Mapping(source = "idUsuario", target = "userId")
-  @Mapping(source = "fechaPrestamo", target = "loanDate")
-  @Mapping(source = "cantidadLibros", target = "bookQuiantity")
+  @Mapping(source = "cantidadLibros", target = "bookQuantity")
   @Mapping(source = "prestamoLibros", target = "books")
   LoanSave toLoanSave(Prestamo prestamo);
 
@@ -20,5 +19,6 @@ public interface LoanSaveMapper {
   @Mapping(target = "idPrestamo", ignore = true)
   @Mapping(target = "entregado", ignore = true)
   @Mapping(target = "usuario", ignore = true)
+  @Mapping(target = "fechaPrestamo", ignore = true)
   Prestamo toPrestamo(LoanSave loanSave);
 }

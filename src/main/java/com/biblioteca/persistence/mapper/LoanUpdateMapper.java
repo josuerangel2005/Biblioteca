@@ -11,22 +11,22 @@ import com.biblioteca.persistence.entity.Prestamo;
 @Mapper(componentModel = "spring", uses = { LoanBookMapper.class })
 public interface LoanUpdateMapper {
   @Mapping(source = "idUsuario", target = "userId")
-  @Mapping(source = "fechaPrestamo", target = "loanDate")
   @Mapping(source = "entregado", target = "delivered")
-  @Mapping(source = "cantidadLibros", target = "bookQuiantity")
+  @Mapping(source = "cantidadLibros", target = "bookQuantity")
   @Mapping(source = "prestamoLibros", target = "books")
   LoanUpdate toLoanUpdate(Prestamo prestamo);
 
   @InheritInverseConfiguration
   @Mapping(target = "idPrestamo", ignore = true)
   @Mapping(target = "usuario", ignore = true)
+  @Mapping(target = "fechaPrestamo", ignore = true)
   Prestamo toPrestamo(LoanUpdate loanUpdate);
 
   @Mapping(source = "userId", target = "idUsuario")
-  @Mapping(source = "loanDate", target = "fechaPrestamo")
+  @Mapping(target = "fechaPrestamo", ignore = true)
   @Mapping(source = "delivered", target = "entregado")
-  @Mapping(source = "bookQuiantity", target = "cantidadLibros")
-  @Mapping(source = "books", target = "prestamoLibros")
+  @Mapping(source = "bookQuantity", target = "cantidadLibros")
+  @Mapping(target = "prestamoLibros", ignore = true)
   @Mapping(target = "idPrestamo", ignore = true)
   @Mapping(target = "usuario", ignore = true)
   void updatePrestamoFromLoan(LoanUpdate loanUpdate, @MappingTarget Prestamo prestamo);

@@ -18,7 +18,7 @@ public class UsuarioRestExceptionHandler {
     return ResponseEntity.badRequest().body(new Error("user-not-exists", userNotExistsException.getMessage()));
   }
 
-  @ExceptionHandler(UserNotExistsException.class)
+  @ExceptionHandler(UserAlreadyExistsException.class)
   public ResponseEntity<Error> handleException(UserAlreadyExistsException userAlreadyExistsException) {
     return ResponseEntity.badRequest().body(new Error("user-already-exists", userAlreadyExistsException.getMessage()));
   }
