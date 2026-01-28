@@ -19,6 +19,10 @@ repositories {
 }
 
 dependencies {
+  // Source: https://mvnrepository.com/artifact/com.auth0/java-jwt
+    implementation 'com.auth0:java-jwt:4.4.0' 
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+  testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
     // Validación de DTOs
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     
