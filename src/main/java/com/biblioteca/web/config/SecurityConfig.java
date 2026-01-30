@@ -3,6 +3,7 @@ package com.biblioteca.web.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -25,7 +26,11 @@ public class SecurityConfig {
         .cors(Customizer.withDefaults())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(config -> {
-          config.requestMatchers("/api/auth/*").permitAll();
+          config.requestMatchers("/api/auth/**").permitAll();
+          config.requestMatchers(HttpMethod.POST).hasRole("ADMIN");
+          config.requestMatchers(HttpMethod.PUT).hasRole("ADMIN");
+          config.requestMatchers(HttpMethod.DELETE).hasRole("ADMIN");
+          config.requestMatchers("/loan/**").hasRole("ADMIN");
           config.anyRequest().authenticated();
         })
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

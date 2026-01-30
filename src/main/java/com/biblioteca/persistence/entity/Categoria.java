@@ -3,8 +3,11 @@ package com.biblioteca.persistence.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.biblioteca.persistence.audit.AuditableEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,7 +16,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "categoria")
-public class Categoria {
+@EntityListeners({ AuditableEntity.class })
+public class Categoria extends AuditableEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id_categoria")

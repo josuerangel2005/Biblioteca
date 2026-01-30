@@ -1,12 +1,16 @@
 package com.biblioteca.persistence.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.biblioteca.persistence.audit.AuditableEntity;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +22,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "prestamo")
-public class Prestamo {
+@EntityListeners({ AuditableEntity.class })
+public class Prestamo extends AuditableEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id_prestamo")
@@ -122,6 +127,12 @@ public class Prestamo {
     } else if (!idPrestamo.equals(other.idPrestamo))
       return false;
     return true;
+  }
+
+  @Override
+  public String toString() {
+    return "Prestamo [idPrestamo=" + idPrestamo + ", idUsuario=" + idUsuario + ", fechaPrestamo=" + fechaPrestamo
+        + ", cantidadLibros=" + cantidadLibros + ", entregado=" + entregado + "]";
   }
 
 }

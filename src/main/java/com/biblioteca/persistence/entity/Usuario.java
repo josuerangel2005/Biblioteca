@@ -4,18 +4,24 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.biblioteca.persistence.audit.AuditableEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuario")
-
-public class Usuario {
+@EntityListeners({ AuditableEntity.class })
+public class Usuario extends AuditableEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id_usuario")
@@ -35,6 +41,13 @@ public class Usuario {
 
   @OneToMany(mappedBy = "usuario")
   private Set<Prestamo> prestamos = new HashSet<>();
+
+  @Column(nullable = false, unique = true)
+  private String username;
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "username", referencedColumnName = "username", insertable = false, updatable = false)
+  private UserEntity userEntity;
 
   public Integer getIdUsuario() {
     return idUsuario;
@@ -107,6 +120,22 @@ public class Usuario {
     } else if (!idUsuario.equals(other.idUsuario))
       return false;
     return true;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public UserEntity getUserEntity() {
+    return userEntity;
+  }
+
+  public void setUserEntity(UserEntity userEntity) {
+    this.userEntity = userEntity;
   }
 
 }
