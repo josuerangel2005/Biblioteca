@@ -5,8 +5,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import com.biblioteca.domain.dto.UpdatePageBookDto;
 import com.biblioteca.domain.dto.Book.Book;
 import com.biblioteca.domain.dto.Book.BookSave;
 import com.biblioteca.domain.dto.Book.BookUpdate;
@@ -18,6 +22,7 @@ import com.biblioteca.domain.repository.BookRepository;
 import com.biblioteca.persistence.crud.AutorCrudRepository;
 import com.biblioteca.persistence.crud.CategoriaCrudRepository;
 import com.biblioteca.persistence.crud.LibroCrudRepository;
+import com.biblioteca.persistence.crud.LibroSortingAndPageRepository;
 import com.biblioteca.persistence.entity.Autor;
 import com.biblioteca.persistence.entity.Categoria;
 import com.biblioteca.persistence.entity.Libro;
@@ -28,6 +33,7 @@ import com.biblioteca.persistence.entity.LibroCategoriaPK;
 import com.biblioteca.persistence.mapper.BookMapper;
 import com.biblioteca.persistence.mapper.BookSaveMapper;
 import com.biblioteca.persistence.mapper.BookUpdateMapper;
+import com.biblioteca.persistence.projection.LibroVeces;
 
 @Repository
 public class BookRepositoryJPA implements BookRepository {
@@ -48,6 +54,9 @@ public class BookRepositoryJPA implements BookRepository {
 
   @Autowired
   private BookUpdateMapper bookUpdateMapper;
+
+  @Autowired
+  private LibroSortingAndPageRepository libroSortingAndPageRepository;
 
   public void validarIdAutor(int id) {
     this.autorCrudRepository.findById(id).orElseThrow(() -> new AuthorNotExistsException(id));
@@ -180,4 +189,58 @@ public class BookRepositoryJPA implements BookRepository {
     Libro libroGuardado = this.libroCrudRepository.save(libro);
     return this.bookMapper.toBook(libroGuardado);
   }
+
+  @Override
+  public List<Book> findByDisponibleTrue() {
+    return this.bookMapper.toBooks(this.libroCrudRepository.findByDisponibleTrue());
+  }
+
+  @Override
+  public List<Book> findByNumPaginasGreaterThan(int numPaginas) {
+    return this.bookMapper.toBooks(this.libroCrudRepository.findByNumPaginasGreaterThan(numPaginas));
+  }
+
+  @Override
+  public Book findFirstByTitulo(String titulo) {
+    return this.bookMapper.toBook(this.libroCrudRepository.findFirstByTitulo(titulo));
+  }
+
+  @Override
+  public List<LibroVeces> getMostLoanBooks() {
+    return this.libroCrudRepository.getMostLoanBooks();
+  }
+
+  @Override
+  public List<Book> librosAutores() {
+    return this.bookMapper.toBooks(this.libroCrudRepository.librosAutores());
+  }
+
+  @Override
+  public List<Book> librosByCategoria(String categoryName) {
+    return this.bookMapper.toBooks(this.libroCrudRepository.librosByCategoria(categoryName));
+  }
+
+  @Override
+  public List<Book> noLoanBooks() {
+    return this.bookMapper.toBooks(this.libroCrudRepository.noLoanBooks());
+  }
+
+  @Override
+  public Page<Book> pageAndSortingBooks(int pages, int elements, String sortBy, String direction) {
+    return (Page<Book>) this.libroSortingAndPageRepository
+        .findAll(PageRequest.of(pages, elements, Sort.by(Sort.Direction.fromString(direction), sortBy)))
+        .map(libro -> this.bookMapper.toBook(libro));
+
+  }
+
+  @Override
+  public void updatePagesOfBook(UpdatePageBookDto updatePageBookDto) {
+    this.libroCrudRepository.updatePagesOfBook(updatePageBookDto);
+  }
+
+  @Override
+  public boolean updateStateOfBook(int idLibro) {
+    return this.libroCrudRepository.updateStateOfBook(idLibro);
+  }
+
 }

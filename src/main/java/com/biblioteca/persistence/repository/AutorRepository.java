@@ -1,5 +1,6 @@
 package com.biblioteca.persistence.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,16 @@ public class AutorRepository implements AuthorRepository {
         .orElseThrow(() -> new AuthorNotExistsException(id));
     this.authorUpdateMapper.updateEntityFromDto(author, toUpdate);
     return this.authorMapper.toAuthor(this.autorCrudRepository.save(toUpdate));
+  }
+
+  @Override
+  public List<Autor> findByFechaNacimientoBetween(LocalDate fechaInicio, LocalDate fechaFin) {
+    return this.autorCrudRepository.findByFechaNacimientoBetween(fechaInicio, fechaFin);
+  }
+
+  @Override
+  public AuthorResponse findFirstByNombre(String nombre) {
+    return this.authorMapper.toAuthor(this.autorCrudRepository.findFirstByNombre(nombre));
   }
 
 }

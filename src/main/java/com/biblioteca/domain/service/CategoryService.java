@@ -25,17 +25,17 @@ public class CategoryService {
     return this.categoryRepository.getCategoryById(id);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public Category saveCategory(CategorySave category) {
     return this.categoryRepository.saveCategory(category);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public Category updateCategory(CategorySave category, int id) {
     return this.categoryRepository.updateCategory(category, id);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public void deleteCategory(int id) {
     this.categoryRepository.deleteCategoryById(id);
   }

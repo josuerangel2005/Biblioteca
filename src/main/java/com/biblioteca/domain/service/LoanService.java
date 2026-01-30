@@ -26,17 +26,17 @@ public class LoanService {
     return this.prestamoRepository.findById(id);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public Loan save(LoanSave loanSave) {
     return this.prestamoRepository.save(loanSave);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public Loan update(LoanUpdate loanUpdate, int id) {
     return this.prestamoRepository.update(loanUpdate, id);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public void delete(int id) {
     this.prestamoRepository.delete(id);
   }

@@ -26,17 +26,17 @@ public class AuthorService {
     return this.authorRepository.getAuthorById(id);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public AuthorResponse saveAuthor(AuthorSave authorSave) {
     return this.authorRepository.saveAuthor(authorSave);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public AuthorResponse updateAuthor(int id, AuthorUpdate authorUpdate) {
     return this.authorRepository.updateAuthor(id, authorUpdate);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public void deleteAuthor(int id) {
     this.authorRepository.deleteAuthor(id);
   }

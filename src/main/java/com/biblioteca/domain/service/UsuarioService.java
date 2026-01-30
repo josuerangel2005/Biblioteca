@@ -25,17 +25,17 @@ public class UsuarioService {
     return this.usuarioRepository.findById(id);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public User save(UserSave userSave) {
     return this.usuarioRepository.save(userSave);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public User update(UserSave userSave, int id) {
     return this.usuarioRepository.update(userSave, id);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public void delete(int id) {
     this.usuarioRepository.delete(id);
   }

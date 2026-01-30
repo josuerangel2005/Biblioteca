@@ -26,17 +26,17 @@ public class BookService {
     return this.bookRepositoryJPA.getBookById(id);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public Book saveBook(BookSave bookSave) {
     return this.bookRepositoryJPA.saveBook(bookSave);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public Book updateBook(BookUpdate bookUpdate, int id) {
     return this.bookRepositoryJPA.updateBook(bookUpdate, id);
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public void deleteBook(int id) {
     this.bookRepositoryJPA.deleteBook(id);
   }

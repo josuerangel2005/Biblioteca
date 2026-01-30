@@ -3,6 +3,7 @@ package com.biblioteca.persistence.repository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ import com.biblioteca.persistence.entity.PrestamoLibroPK;
 import com.biblioteca.persistence.mapper.LoanMapper;
 import com.biblioteca.persistence.mapper.LoanSaveMapper;
 import com.biblioteca.persistence.mapper.LoanUpdateMapper;
+import com.biblioteca.persistence.projection.Reporte;
 
 @Repository
 public class PrestamoRepository implements LoanRepository {
@@ -128,4 +130,21 @@ public class PrestamoRepository implements LoanRepository {
   public void validarIdUsuario(int id) {
     this.usuarioCrudRepository.findById(id).orElseThrow(() -> new UserNotExistsException(id));
   }
+
+  @Override
+  public List<Loan> getAllNotDelivered() {
+    return this.loanMapper.toLoans(this.prestamoCrudRepository.getAllNotDelivered());
+  }
+
+  @Override
+  public Loan getPrestamoByIdWithBooks(int idLoan) {
+    return this.loanMapper.toLoan(this.prestamoCrudRepository.getPrestamoByIdWithBooks(idLoan)
+        .orElseThrow(() -> new LoanNotExistsException(idLoan)));
+  }
+
+  @Override
+  public List<Reporte> getReportes() {
+    return this.prestamoCrudRepository.getReportes();
+  }
+
 }
