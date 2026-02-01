@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.biblioteca.domain.dto.Loan.Loan;
 import com.biblioteca.domain.dto.Loan.LoanSave;
 import com.biblioteca.domain.dto.Loan.LoanUpdate;
+import com.biblioteca.persistence.projection.Reporte;
 import com.biblioteca.persistence.repository.PrestamoRepository;
 
 @Service
@@ -41,4 +42,18 @@ public class LoanService {
     this.prestamoRepository.delete(id);
   }
 
+  @Transactional(readOnly = true)
+  public List<Loan> getAllNotDelivered() {
+    return this.prestamoRepository.getAllNotDelivered();
+  }
+
+  @Transactional(readOnly = true)
+  public Loan getPrestamoByIdWithBooks(int idLoan) {
+    return this.prestamoRepository.getPrestamoByIdWithBooks(idLoan);
+  }
+
+  @Transactional(readOnly = true)
+  public List<Reporte> getReportes() {
+    return this.prestamoRepository.getReportes();
+  }
 }

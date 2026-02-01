@@ -1,5 +1,6 @@
 package com.biblioteca.domain.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.biblioteca.domain.dto.User.User;
 import com.biblioteca.domain.dto.User.UserSave;
+import com.biblioteca.persistence.projection.Usuarios;
 import com.biblioteca.persistence.repository.UsuarioRepository;
 
 @Service
@@ -38,5 +40,10 @@ public class UsuarioService {
   @Transactional(rollbackFor = Exception.class)
   public void delete(int id) {
     this.usuarioRepository.delete(id);
+  }
+
+  @Transactional(readOnly = true)
+  public List<Usuarios> getTop3Users(LocalDateTime date1, LocalDateTime date2) {
+    return this.usuarioRepository.getTop3Users(date1, date2);
   }
 }

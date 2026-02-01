@@ -18,6 +18,7 @@ import com.biblioteca.domain.dto.Loan.Loan;
 import com.biblioteca.domain.dto.Loan.LoanSave;
 import com.biblioteca.domain.dto.Loan.LoanUpdate;
 import com.biblioteca.domain.service.LoanService;
+import com.biblioteca.persistence.projection.Reporte;
 
 @RestController
 @RequestMapping("/loan")
@@ -49,5 +50,20 @@ public class LoanController {
   public ResponseEntity<Void> delete(@PathVariable int id) {
     this.loanService.delete(id);
     return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/ndelivered")
+  public ResponseEntity<List<Loan>> getAllNotDelivered() {
+    return ResponseEntity.ok(this.loanService.getAllNotDelivered());
+  }
+
+  @GetMapping("/loanw/{idLoan}")
+  public ResponseEntity<Loan> getPrestamoByIdwithBooks(@PathVariable int idLoan) {
+    return ResponseEntity.ok(this.loanService.getPrestamoByIdWithBooks(idLoan));
+  }
+
+  @GetMapping("/reports")
+  public ResponseEntity<List<Reporte>> getReportes() {
+    return ResponseEntity.ok(this.loanService.getReportes());
   }
 }

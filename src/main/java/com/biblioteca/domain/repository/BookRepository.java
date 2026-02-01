@@ -8,7 +8,6 @@ import com.biblioteca.domain.dto.UpdatePageBookDto;
 import com.biblioteca.domain.dto.Book.Book;
 import com.biblioteca.domain.dto.Book.BookSave;
 import com.biblioteca.domain.dto.Book.BookUpdate;
-import com.biblioteca.persistence.entity.Libro;
 import com.biblioteca.persistence.projection.LibroVeces;
 
 public interface BookRepository {

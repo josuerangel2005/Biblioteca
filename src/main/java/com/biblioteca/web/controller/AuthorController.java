@@ -1,5 +1,6 @@
 package com.biblioteca.web.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biblioteca.domain.dto.Author.AuthorResponse;
 import com.biblioteca.domain.dto.Author.AuthorSave;
 import com.biblioteca.domain.dto.Author.AuthorUpdate;
 import com.biblioteca.domain.service.AuthorService;
+
+import ch.qos.logback.classic.spi.STEUtil;
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/author")
@@ -49,5 +54,16 @@ public class AuthorController {
   public ResponseEntity<Void> deleteAuthor(@PathVariable int id) {
     this.authorService.deleteAuthor(id);
     return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/date")
+  public ResponseEntity<List<AuthorResponse>> findByFechaNacimientoBetween(@RequestParam LocalDate fechaInicio,
+      @RequestParam LocalDate fechaFin) {
+    return ResponseEntity.ok(this.authorService.findByFechaNacimientoBetween(fechaInicio, fechaFin));
+  }
+
+  @GetMapping("/find/{name}")
+  public ResponseEntity<AuthorResponse> findFirstNombre(@PathVariable String name) {
+    return ResponseEntity.ok(this.authorService.findFirstNombre(name));
   }
 }

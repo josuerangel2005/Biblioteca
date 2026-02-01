@@ -67,8 +67,8 @@ public class AutorRepository implements AuthorRepository {
   }
 
   @Override
-  public List<Autor> findByFechaNacimientoBetween(LocalDate fechaInicio, LocalDate fechaFin) {
-    return this.autorCrudRepository.findByFechaNacimientoBetween(fechaInicio, fechaFin);
+  public List<AuthorResponse> findByFechaNacimientoBetween(LocalDate fechaInicio, LocalDate fechaFin) {
+    return this.authorMapper.toAuthors(this.autorCrudRepository.findByFechaNacimientoBetween(fechaInicio, fechaFin));
   }
 
   @Override

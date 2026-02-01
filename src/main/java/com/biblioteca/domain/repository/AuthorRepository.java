@@ -6,7 +6,6 @@ import java.util.List;
 import com.biblioteca.domain.dto.Author.AuthorResponse;
 import com.biblioteca.domain.dto.Author.AuthorSave;
 import com.biblioteca.domain.dto.Author.AuthorUpdate;
-import com.biblioteca.persistence.entity.Autor;
 
 public interface AuthorRepository {
   List<AuthorResponse> getAllAuthor();
@@ -21,5 +20,5 @@ public interface AuthorRepository {
 
   void deleteAuthor(int id);
 
-  List<Autor> findByFechaNacimientoBetween(LocalDate fechaInicio, LocalDate fechaFin);
+  List<AuthorResponse> findByFechaNacimientoBetween(LocalDate fechaInicio, LocalDate fechaFin);
 }

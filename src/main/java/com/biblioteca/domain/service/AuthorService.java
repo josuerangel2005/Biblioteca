@@ -1,5 +1,6 @@
 package com.biblioteca.domain.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,15 @@ public class AuthorService {
   @Transactional(rollbackFor = Exception.class)
   public void deleteAuthor(int id) {
     this.authorRepository.deleteAuthor(id);
+  }
+
+  @Transactional(readOnly = true)
+  public List<AuthorResponse> findByFechaNacimientoBetween(LocalDate fechaInicio, LocalDate fechaFin) {
+    return this.authorRepository.findByFechaNacimientoBetween(fechaInicio, fechaFin);
+  }
+
+  @Transactional(readOnly = true)
+  public AuthorResponse findFirstNombre(String nombre) {
+    return this.authorRepository.findFirstByNombre(nombre);
   }
 }
